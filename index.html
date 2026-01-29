@@ -56,6 +56,7 @@
         
         .card { padding: 18px; border-radius: 16px; margin-bottom: 12px; text-align: center; transition: 0.3s; border: 1px solid rgba(255,255,255,0.05); }
         .hari { background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.2); }
+        .minggu { background: rgba(167, 139, 250, 0.1); color: #a78bfa; border: 1px solid rgba(167, 139, 250, 0.2); }
         .bulan { background: rgba(74, 222, 128, 0.1); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.2); }
         .tahun { background: rgba(251, 191, 36, 0.1); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.2); }
         
@@ -66,7 +67,7 @@
 <body>
 
 <div class="container">
-    <h2>💰 Cuan Calculator</h2>
+    <h2>💰 Calc APR</h2>
     
     <label>MATA UANG</label>
     <div class="currency-switch">
@@ -85,6 +86,10 @@
         <div class="card hari">
             <span class="title">Estimasi Harian</span>
             <span id="harian" class="val">0</span>
+        </div>
+        <div class="card minggu">
+            <span class="title">Estimasi Mingguan</span>
+            <span id="mingguan" class="val">0</span>
         </div>
         <div class="card bulan">
             <span class="title">Estimasi Bulanan</span>
@@ -124,16 +129,15 @@
 
         const hasilTahun = saldo * (bunga / 100);
         const hasilBulan = hasilTahun / 12;
+        const hasilMinggu = hasilTahun / 52;
         const hasilHari = hasilTahun / 365;
 
         document.getElementById('tahunan').innerText = formatMataUang(hasilTahun);
         document.getElementById('bulanan').innerText = formatMataUang(hasilBulan);
+        document.getElementById('mingguan').innerText = formatMataUang(hasilMinggu);
         document.getElementById('harian').innerText = formatMataUang(hasilHari);
     }
 </script>
 
 </body>
 </html>
-
-
-
