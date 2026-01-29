@@ -1,6 +1,6 @@
 {
-  "name": "Cuan Calculator Minas",
-  "short_name": "CuanCalc",
+  "name": "Calc APR",
+  "short_name": "Calc APR",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#0f172a",
