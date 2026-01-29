@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuan Calculator Minas</title>
+    <style>
+        body { font-family: sans-serif; background: #f0f4f8; padding: 20px; display: flex; justify-content: center; }
+        .container { background: white; padding: 20px; border-radius: 20px; width: 100%; max-width: 350px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #0288d1; margin-bottom: 20px; }
+        
+        .currency-switch { display: flex; gap: 10px; margin-bottom: 15px; }
+        .currency-switch button { 
+            flex: 1; padding: 10px; border: none; border-radius: 10px; cursor: pointer;
+            font-weight: bold; background: #e0e0e0; transition: 0.3s;
+        }
+        .currency-switch button.active { background: #0288d1; color: white; }
+
+        label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; }
+        input { width: 100%; padding: 12px; margin-bottom: 5px; border: 2px solid #ddd; border-radius: 10px; font-size: 16px; box-sizing: border-box; outline: none; }
+        input:focus { border-color: #0288d1; }
+        .terbilang { font-size: 12px; color: #666; margin-bottom: 15px; font-style: italic; min-height: 15px; }
+        
+        .card { padding: 15px; border-radius: 10px; margin-bottom: 10px; text-align: center; color: white; }
+        .hari { background: #29b6f6; }
+        .bulan { background: #66bb6a; }
+        .tahun { background: #ffa726; }
+        .val { font-size: 22px; font-weight: bold; display: block; }
+        .title { font-size: 12px; text-transform: uppercase; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>💰 Cuan Calculator</h2>
+    
+    <label>Pilih Mata Uang:</label>
+    <div class="currency-switch">
+        <button id="btn-idr" class="active" onclick="setCurrency('IDR')">IDR (Rp)</button>
+        <button id="btn-usd" onclick="setCurrency('USD')">USD ($)</button>
+    </div>
+    
+    <label id="label-saldo">Jumlah Saldo (Rp)</label>
+    <input type="number" id="saldo" placeholder="0" oninput="hitung()">
+    <div id="cek-saldo" class="terbilang"></div>
+    
+    <label>Bunga per Tahun (%)</label>
+    <input type="number" id="bunga" placeholder="0" oninput="hitung()">
+
+    <div style="margin-top: 20px;">
+        <div class="card hari">
+            <span class="title">Bunga Harian</span>
+            <span id="harian" class="val">0</span>
+        </div>
+        <div class="card bulan">
+            <span class="title">Bunga Bulanan</span>
+            <span id="bulanan" class="val">0</span>
+        </div>
+        <div class="card tahun">
+            <span class="title">Bunga Tahunan</span>
+            <span id="tahunan" class="val">0</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentCurrency = 'IDR';
+
+    function setCurrency(type) {
+        currentCurrency = type;
+        // Update tombol aktif
+        document.getElementById('btn-idr').classList.toggle('active', type === 'IDR');
+        document.getElementById('btn-usd').classList.toggle('active', type === 'USD');
+        // Update label
+        document.getElementById('label-saldo').innerText = `Jumlah Saldo (${type === 'IDR' ? 'Rp' : '$'})`;
+        hitung(); // Hitung ulang formatnya
+    }
+
+    function formatMataUang(angka) {
+        if (currentCurrency === 'IDR') {
+            return "Rp " + new Intl.NumberFormat('id-ID').format(Math.floor(angka));
+        } else {
+            // Format Amerika pakai koma untuk ribuan, titik untuk desimal
+            return "$ " + new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(angka);
+        }
+    }
+
+    function hitung() {
+        const saldo = parseFloat(document.getElementById('saldo').value) || 0;
+        const bunga = parseFloat(document.getElementById('bunga').value) || 0;
+
+        // Update teks bantuan di bawah input
+        document.getElementById('cek-saldo').innerText = formatMataUang(saldo);
+
+        // Itung-itungan
+        const hasilTahun = saldo * (bunga / 100);
+        const hasilBulan = hasilTahun / 12;
+        const hasilHari = hasilTahun / 365;
+
+        // Tampilkan ke kartu hasil
+        document.getElementById('tahunan').innerText = formatMataUang(hasilTahun);
+        document.getElementById('bulanan').innerText = formatMataUang(hasilBulan);
+        document.getElementById('harian').innerText = formatMataUang(hasilHari);
+    }
+</script>
+
+</body>
+</html>
