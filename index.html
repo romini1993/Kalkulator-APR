@@ -2,140 +2,175 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calc APR</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="manifest" href="manifest.json">
-    
-    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Calc APR">
-    <meta name="apple-mobile-web-app-title" content="Calc APR">
-    <meta name="theme-color" content="#0f172a">
-    <meta name="msapplication-navbutton-color" content="#0f172a">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
+    <meta name="apple-mobile-web-app-title" content="Calc APR Pro">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2454/2454269.png">
+    <meta name="theme-color" content="#0f172a">
+    <title>Calc APR Pro v5</title>
     <style>
-        body { 
-            font-family: 'Segoe UI', sans-serif; 
-            background: #0f172a; 
-            color: #f8fafc;
-            padding: 20px; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --accent: #38bdf8;
+            --text: #f8fafc;
+            --subtext: #94a3b8;
         }
-        .container { 
-            background: #1e293b; 
-            padding: 25px; 
-            border-radius: 24px; 
-            width: 100%; 
-            max-width: 380px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            border: 1px solid #334155;
-        }
-        h2 { text-align: center; color: #38bdf8; margin-bottom: 25px; font-size: 24px; letter-spacing: 1px; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); margin: 0; padding: 0; display: flex; justify-content: center; min-height: 100vh; }
         
-        .currency-switch { display: flex; gap: 10px; margin-bottom: 20px; background: #0f172a; padding: 5px; border-radius: 12px; }
-        .currency-switch button { 
-            flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer;
-            font-weight: bold; background: transparent; color: #94a3b8; transition: 0.3s;
-        }
-        .currency-switch button.active { background: #38bdf8; color: #0f172a; }
+        .container { width: 100%; max-width: 400px; padding: 40px 20px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        h2 { margin: 0; font-size: 26px; color: var(--accent); letter-spacing: 1px; }
 
-        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; color: #94a3b8; }
-        input { 
-            width: 100%; padding: 14px; margin-bottom: 5px; border: 2px solid #334155; 
-            border-radius: 12px; font-size: 18px; box-sizing: border-box; outline: none; 
-            background: #0f172a; color: white; transition: 0.3s;
-        }
-        input:focus { border-color: #38bdf8; box-shadow: 0 0 10px rgba(56, 189, 248, 0.2); }
-        .terbilang { font-size: 13px; color: #38bdf8; margin-bottom: 20px; font-weight: 500; min-height: 15px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; color: var(--subtext); text-transform: uppercase; }
         
-        .card { padding: 18px; border-radius: 16px; margin-bottom: 12px; text-align: center; transition: 0.3s; border: 1px solid rgba(255,255,255,0.05); }
-        .hari { background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.2); }
-        .minggu { background: rgba(167, 139, 250, 0.1); color: #a78bfa; border: 1px solid rgba(167, 139, 250, 0.2); }
-        .bulan { background: rgba(74, 222, 128, 0.1); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.2); }
-        .tahun { background: rgba(251, 191, 36, 0.1); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.2); }
+        .currency-switch { display: flex; gap: 10px; margin-bottom: 25px; background: var(--card); padding: 5px; border-radius: 14px; border: 1px solid #334155; }
+        .currency-switch button { flex: 1; padding: 12px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; background: transparent; color: var(--subtext); transition: 0.3s; }
+        .currency-switch button.active { background: var(--accent); color: #0f172a; }
+
+        .input-box { width: 100%; padding: 16px; margin-bottom: 5px; border: 2px solid #334155; border-radius: 16px; background: var(--card); transition: 0.3s; }
+        .input-box:focus-within { border-color: var(--accent); }
+        input { width: 100%; background: transparent; border: none; color: white; font-size: 22px; font-weight: bold; outline: none; }
+        
+        .terbilang { font-size: 13px; color: var(--accent); margin-bottom: 25px; font-weight: 500; min-height: 18px; padding-left: 5px; }
+
+        .result-grid { display: grid; gap: 12px; margin-top: 10px; }
+        .apr-card { padding: 20px; border-radius: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
         
         .val { font-size: 24px; font-weight: 800; display: block; margin-top: 4px; }
-        .title { font-size: 11px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; opacity: 0.8; }
+        .title { font-size: 11px; text-transform: uppercase; font-weight: bold; opacity: 0.7; letter-spacing: 1.5px; }
+        .sub-val { font-size: 12px; color: #94a3b8; display: block; margin-top: 4px; font-weight: 500; }
+
+        /* Card Colors */
+        .harian { background: rgba(56, 189, 248, 0.1); color: #38bdf8; }
+        .mingguan { background: rgba(167, 139, 250, 0.1); color: #a78bfa; }
+        .bulanan { background: rgba(74, 222, 128, 0.1); color: #4ade80; }
+        .tahunan { background: rgba(251, 191, 36, 0.1); color: #fbbf24; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>💰 Calc APR</h2>
-    
-    <label>MATA UANG</label>
+    <div class="header">
+        <h2>💰 Calc APR Pro</h2>
+    </div>
+
+    <label>Mata Uang</label>
     <div class="currency-switch">
         <button id="btn-idr" class="active" onclick="setCurrency('IDR')">IDR (Rp)</button>
         <button id="btn-usd" onclick="setCurrency('USD')">USD ($)</button>
     </div>
-    
-    <label id="label-saldo">JUMLAH SALDO (Rp)</label>
-    <input type="number" id="saldo" placeholder="0" oninput="hitung()">
-    <div id="cek-saldo" class="terbilang"></div>
-    
-    <label>BUNGA PER TAHUN (%)</label>
-    <input type="number" id="bunga" placeholder="0" oninput="hitung()">
 
-    <div style="margin-top: 25px;">
-        <div class="card hari">
+    <label id="label-saldo">Jumlah Saldo (Rp)</label>
+    <div class="input-box">
+        <input type="text" id="saldo" inputmode="decimal" placeholder="0" oninput="hitung()">
+    </div>
+    <div id="cek-saldo" class="terbilang"></div>
+
+    <label>Bunga Per Tahun (%)</label>
+    <div class="input-box">
+        <input type="text" id="bunga" inputmode="decimal" placeholder="0" oninput="hitung()">
+    </div>
+
+    <div class="result-grid">
+        <div class="apr-card harian">
             <span class="title">Estimasi Harian</span>
             <span id="harian" class="val">0</span>
+            <span id="harian-sub" class="sub-val"></span>
         </div>
-        <div class="card minggu">
+        <div class="apr-card mingguan">
             <span class="title">Estimasi Mingguan</span>
             <span id="mingguan" class="val">0</span>
+            <span id="mingguan-sub" class="sub-val"></span>
         </div>
-        <div class="card bulan">
+        <div class="apr-card bulanan">
             <span class="title">Estimasi Bulanan</span>
             <span id="bulanan" class="val">0</span>
+            <span id="bulanan-sub" class="sub-val"></span>
         </div>
-        <div class="card tahun">
+        <div class="apr-card tahunan">
             <span class="title">Estimasi Tahunan</span>
             <span id="tahunan" class="val">0</span>
+            <span id="tahunan-sub" class="sub-val"></span>
         </div>
     </div>
 </div>
 
 <script>
     let currentCurrency = 'IDR';
+    let usdToIdr = 16250; // Kurs statis buat konversi bayangan
 
     function setCurrency(type) {
         currentCurrency = type;
         document.getElementById('btn-idr').classList.toggle('active', type === 'IDR');
         document.getElementById('btn-usd').classList.toggle('active', type === 'USD');
-        document.getElementById('label-saldo').innerText = `JUMLAH SALDO (${type === 'IDR' ? 'Rp' : '$'})`;
+        document.getElementById('label-saldo').innerText = `Jumlah Saldo (${type === 'IDR' ? 'Rp' : '$'})`;
         hitung();
     }
 
-    function formatMataUang(angka) {
-        if (currentCurrency === 'IDR') {
-            return "Rp " + new Intl.NumberFormat('id-ID').format(Math.floor(angka));
-        } else {
-            return "$ " + new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(angka);
-        }
+    function formatNumber(num, dec) {
+        if (num === 0) return "0";
+        return new Intl.NumberFormat('en-US', { 
+            minimumFractionDigits: dec, 
+            maximumFractionDigits: dec 
+        }).format(num);
+    }
+
+    function formatIDR(num) {
+        return "Rp " + new Intl.NumberFormat('id-ID').format(Math.floor(num));
     }
 
     function hitung() {
-        const saldo = parseFloat(document.getElementById('saldo').value) || 0;
-        const bunga = parseFloat(document.getElementById('bunga').value) || 0;
+        let sInput = document.getElementById('saldo');
+        let bInput = document.getElementById('bunga');
+        
+        // Bersihin koma buat kalkulasi
+        let rawSaldo = sInput.value.replace(/,/g, '');
+        let rawBunga = bInput.value.replace(/,/g, '');
+        
+        let saldo = parseFloat(rawSaldo) || 0;
+        let bunga = parseFloat(rawBunga) || 0;
 
-        document.getElementById('cek-saldo').innerText = formatMataUang(saldo);
+        // Auto format ribuan pas ngetik (kalo bukan desimal)
+        if (!sInput.value.includes('.')) {
+            sInput.value = formatNumber(saldo, 0);
+        }
 
-        const hasilTahun = saldo * (bunga / 100);
-        const hasilBulan = hasilTahun / 12;
-        const hasilMinggu = hasilTahun / 52;
-        const hasilHari = hasilTahun / 365;
+        // Hitung Logika APR
+        let hasilTahun = saldo * (bunga / 100);
+        let data = {
+            tahunan: hasilTahun,
+            bulanan: hasilTahun / 12,
+            mingguan: hasilTahun / 52,
+            harian: hasilTahun / 365
+        };
 
-        document.getElementById('tahunan').innerText = formatMataUang(hasilTahun);
-        document.getElementById('bulanan').innerText = formatMataUang(hasilBulan);
-        document.getElementById('mingguan').innerText = formatMataUang(hasilMinggu);
-        document.getElementById('harian').innerText = formatMataUang(hasilHari);
+        // Update Tampilan "Cek Saldo" di bawah input
+        let konversi = currentCurrency === 'USD' ? saldo * usdToIdr : saldo;
+        document.getElementById('cek-saldo').innerText = saldo > 0 ? formatIDR(konversi) : "";
+
+        // Update Card Hasil
+        for (let key in data) {
+            let value = data[key];
+            let displayVal = "";
+            let subVal = "";
+
+            if (currentCurrency === 'IDR') {
+                displayVal = formatIDR(value);
+            } else {
+                displayVal = "$ " + formatNumber(value, 2);
+                // Kasih bayangan IDR di bawahnya kalo mata uang USD
+                if (value > 0) {
+                    subVal = "≈ " + formatIDR(value * usdToIdr);
+                }
+            }
+
+            document.getElementById(key).innerText = displayVal;
+            document.getElementById(key + '-sub').innerText = subVal;
+        }
     }
 </script>
 
