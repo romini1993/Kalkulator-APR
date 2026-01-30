@@ -6,10 +6,10 @@
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Calc APR Pro">
+    <meta name="apple-mobile-web-app-title" content="APR Pro">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2454/2454269.png">
     <meta name="theme-color" content="#0f172a">
-    <title>Calc APR Pro v5</title>
+    <title>APR Pro Realtime</title>
     <style>
         :root {
             --bg: #0f172a;
@@ -22,40 +22,42 @@
         body { background: var(--bg); color: var(--text); margin: 0; padding: 0; display: flex; justify-content: center; min-height: 100vh; }
         
         .container { width: 100%; max-width: 400px; padding: 40px 20px; }
-        .header { text-align: center; margin-bottom: 30px; }
-        h2 { margin: 0; font-size: 26px; color: var(--accent); letter-spacing: 1px; }
-
-        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; color: var(--subtext); text-transform: uppercase; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        h2 { margin: 0; font-size: 24px; color: var(--accent); }
         
-        .currency-switch { display: flex; gap: 10px; margin-bottom: 25px; background: var(--card); padding: 5px; border-radius: 14px; border: 1px solid #334155; }
-        .currency-switch button { flex: 1; padding: 12px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; background: transparent; color: var(--subtext); transition: 0.3s; }
+        .kurs-info { font-size: 11px; color: var(--subtext); background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 8px; border: 1px solid #334155; }
+
+        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 13px; color: var(--subtext); text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .currency-switch { display: flex; gap: 8px; margin-bottom: 25px; background: var(--card); padding: 4px; border-radius: 12px; }
+        .currency-switch button { flex: 1; padding: 10px; border: none; border-radius: 9px; cursor: pointer; font-weight: bold; background: transparent; color: var(--subtext); transition: 0.2s; }
         .currency-switch button.active { background: var(--accent); color: #0f172a; }
 
-        .input-box { width: 100%; padding: 16px; margin-bottom: 5px; border: 2px solid #334155; border-radius: 16px; background: var(--card); transition: 0.3s; }
+        .input-box { width: 100%; padding: 16px; margin-bottom: 5px; border: 2px solid #334155; border-radius: 16px; background: var(--card); }
         .input-box:focus-within { border-color: var(--accent); }
         input { width: 100%; background: transparent; border: none; color: white; font-size: 22px; font-weight: bold; outline: none; }
         
-        .terbilang { font-size: 13px; color: var(--accent); margin-bottom: 25px; font-weight: 500; min-height: 18px; padding-left: 5px; }
+        .terbilang { font-size: 13px; color: var(--accent); margin-bottom: 25px; font-weight: 500; min-height: 18px; }
 
-        .result-grid { display: grid; gap: 12px; margin-top: 10px; }
-        .apr-card { padding: 20px; border-radius: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
+        .result-grid { display: grid; gap: 12px; }
+        .apr-card { padding: 18px; border-radius: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
         
-        .val { font-size: 24px; font-weight: 800; display: block; margin-top: 4px; }
-        .title { font-size: 11px; text-transform: uppercase; font-weight: bold; opacity: 0.7; letter-spacing: 1.5px; }
+        .val { font-size: 22px; font-weight: 800; display: block; margin-top: 4px; }
+        .title { font-size: 10px; text-transform: uppercase; font-weight: bold; opacity: 0.7; letter-spacing: 1px; }
         .sub-val { font-size: 12px; color: #94a3b8; display: block; margin-top: 4px; font-weight: 500; }
 
-        /* Card Colors */
-        .harian { background: rgba(56, 189, 248, 0.1); color: #38bdf8; }
-        .mingguan { background: rgba(167, 139, 250, 0.1); color: #a78bfa; }
-        .bulanan { background: rgba(74, 222, 128, 0.1); color: #4ade80; }
-        .tahunan { background: rgba(251, 191, 36, 0.1); color: #fbbf24; }
+        .harian { background: rgba(56, 189, 248, 0.08); color: #38bdf8; }
+        .mingguan { background: rgba(167, 139, 250, 0.08); color: #a78bfa; }
+        .bulanan { background: rgba(74, 222, 128, 0.08); color: #4ade80; }
+        .tahunan { background: rgba(251, 191, 36, 0.08); color: #fbbf24; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h2>💰 Calc APR Pro</h2>
+        <h2>💰 APR Pro</h2>
+        <div id="kurs-live" class="kurs-info">USD/IDR: Loading...</div>
     </div>
 
     <label>Mata Uang</label>
@@ -64,7 +66,7 @@
         <button id="btn-usd" onclick="setCurrency('USD')">USD ($)</button>
     </div>
 
-    <label id="label-saldo">Jumlah Saldo (Rp)</label>
+    <label id="label-saldo">Jumlah Saldo</label>
     <div class="input-box">
         <input type="text" id="saldo" inputmode="decimal" placeholder="0" oninput="hitung()">
     </div>
@@ -76,47 +78,41 @@
     </div>
 
     <div class="result-grid">
-        <div class="apr-card harian">
-            <span class="title">Estimasi Harian</span>
-            <span id="harian" class="val">0</span>
-            <span id="harian-sub" class="sub-val"></span>
-        </div>
-        <div class="apr-card mingguan">
-            <span class="title">Estimasi Mingguan</span>
-            <span id="mingguan" class="val">0</span>
-            <span id="mingguan-sub" class="sub-val"></span>
-        </div>
-        <div class="apr-card bulanan">
-            <span class="title">Estimasi Bulanan</span>
-            <span id="bulanan" class="val">0</span>
-            <span id="bulanan-sub" class="sub-val"></span>
-        </div>
-        <div class="apr-card tahunan">
-            <span class="title">Estimasi Tahunan</span>
-            <span id="tahunan" class="val">0</span>
-            <span id="tahunan-sub" class="sub-val"></span>
-        </div>
+        <div class="apr-card harian"><span class="title">Harian</span><span id="harian" class="val">0</span><span id="harian-sub" class="sub-val"></span></div>
+        <div class="apr-card mingguan"><span class="title">Mingguan</span><span id="mingguan" class="val">0</span><span id="mingguan-sub" class="sub-val"></span></div>
+        <div class="apr-card bulanan"><span class="title">Bulanan</span><span id="bulanan" class="val">0</span><span id="bulanan-sub" class="sub-val"></span></div>
+        <div class="apr-card tahunan"><span class="title">Tahunan</span><span id="tahunan" class="val">0</span><span id="tahunan-sub" class="sub-val"></span></div>
     </div>
 </div>
 
 <script>
     let currentCurrency = 'IDR';
-    let usdToIdr = 16788; // Kurs statis buat konversi bayangan
+    let usdToIdr = 16000; // Harga fallback kalo API gagal
+
+    // Fungsi ambil kurs real-time
+    async function fetchKurs() {
+        try {
+            // Pake API CoinGecko buat ambil kurs USD ke IDR
+            const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=usd-coin&vs_currencies=idr');
+            const data = await response.json();
+            usdToIdr = data['usd-coin'].idr;
+            document.getElementById('kurs-live').innerText = `USD/IDR: ${new Intl.NumberFormat('id-ID').format(usdToIdr)}`;
+            hitung(); // Update hasil kalkulasi kalo kurs udah dapet
+        } catch (error) {
+            document.getElementById('kurs-live').innerText = "Kurs: Mode Offline";
+            console.error("Gagal ambil kurs:", error);
+        }
+    }
 
     function setCurrency(type) {
         currentCurrency = type;
-        document.getElementById('btn-idr').classList.toggle('active', type === 'IDR');
-        document.getElementById('btn-usd').classList.toggle('active', type === 'USD');
-        document.getElementById('label-saldo').innerText = `Jumlah Saldo (${type === 'IDR' ? 'Rp' : '$'})`;
+        document.getElementById('btn-idr').className = type === 'IDR' ? 'active' : '';
+        document.getElementById('btn-usd').className = type === 'USD' ? 'active' : '';
         hitung();
     }
 
     function formatNumber(num, dec) {
-        if (num === 0) return "0";
-        return new Intl.NumberFormat('en-US', { 
-            minimumFractionDigits: dec, 
-            maximumFractionDigits: dec 
-        }).format(num);
+        return new Intl.NumberFormat('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec }).format(num);
     }
 
     function formatIDR(num) {
@@ -127,53 +123,33 @@
         let sInput = document.getElementById('saldo');
         let bInput = document.getElementById('bunga');
         
-        // Bersihin koma buat kalkulasi
-        let rawSaldo = sInput.value.replace(/,/g, '');
-        let rawBunga = bInput.value.replace(/,/g, '');
-        
-        let saldo = parseFloat(rawSaldo) || 0;
-        let bunga = parseFloat(rawBunga) || 0;
+        let saldo = parseFloat(sInput.value.replace(/,/g, '')) || 0;
+        let bunga = parseFloat(bInput.value.replace(/,/g, '')) || 0;
 
-        // Auto format ribuan pas ngetik (kalo bukan desimal)
-        if (!sInput.value.includes('.')) {
-            sInput.value = formatNumber(saldo, 0);
-        }
+        if (!sInput.value.includes('.')) sInput.value = formatNumber(saldo, 0);
 
-        // Hitung Logika APR
-        let hasilTahun = saldo * (bunga / 100);
-        let data = {
-            tahunan: hasilTahun,
-            bulanan: hasilTahun / 12,
-            mingguan: hasilTahun / 52,
-            harian: hasilTahun / 365
-        };
+        let thn = saldo * (bunga / 100);
+        let p = { tahunan: thn, bulanan: thn / 12, mingguan: thn / 52, harian: thn / 365 };
 
-        // Update Tampilan "Cek Saldo" di bawah input
+        // Tampilan bayangan saldo di bawah input
         let konversi = currentCurrency === 'USD' ? saldo * usdToIdr : saldo;
         document.getElementById('cek-saldo').innerText = saldo > 0 ? formatIDR(konversi) : "";
 
-        // Update Card Hasil
-        for (let key in data) {
-            let value = data[key];
-            let displayVal = "";
-            let subVal = "";
-
+        for (let k in p) {
+            let val = p[k];
             if (currentCurrency === 'IDR') {
-                displayVal = formatIDR(value);
+                document.getElementById(k).innerText = formatIDR(val);
+                document.getElementById(k + '-sub').innerText = "";
             } else {
-                displayVal = "$ " + formatNumber(value, 2);
-                // Kasih bayangan IDR di bawahnya kalo mata uang USD
-                if (value > 0) {
-                    subVal = "≈ " + formatIDR(value * usdToIdr);
-                }
+                document.getElementById(k).innerText = "$ " + formatNumber(val, 2);
+                document.getElementById(k + '-sub').innerText = val > 0 ? "≈ " + formatIDR(val * usdToIdr) : "";
             }
-
-            document.getElementById(key).innerText = displayVal;
-            document.getElementById(key + '-sub').innerText = subVal;
         }
     }
+
+    // Jalankan ambil kurs pas baru buka
+    window.onload = fetchKurs;
 </script>
 
 </body>
 </html>
-
