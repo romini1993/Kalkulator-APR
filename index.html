@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-title" content="APR Pro">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2454/2454269.png">
     <meta name="theme-color" content="#0f172a">
-    <title>APR Pro Realtime</title>
+    <title>APR Pro Persistence</title>
     <style>
         :root {
             --bg: #0f172a;
@@ -87,25 +87,35 @@
 
 <script>
     let currentCurrency = 'IDR';
-    let usdToIdr = 16000; // Harga fallback kalo API gagal
+    let usdToIdr = 16000;
 
-    // Fungsi ambil kurs real-time
+    // Ambil data kurs realtime
     async function fetchKurs() {
         try {
-            // Pake API CoinGecko buat ambil kurs USD ke IDR
             const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=usd-coin&vs_currencies=idr');
             const data = await response.json();
             usdToIdr = data['usd-coin'].idr;
             document.getElementById('kurs-live').innerText = `USD/IDR: ${new Intl.NumberFormat('id-ID').format(usdToIdr)}`;
-            hitung(); // Update hasil kalkulasi kalo kurs udah dapet
+            hitung();
         } catch (error) {
             document.getElementById('kurs-live').innerText = "Kurs: Mode Offline";
-            console.error("Gagal ambil kurs:", error);
         }
+    }
+
+    // Fungsi Load data dari LocalStorage
+    function loadSavedData() {
+        const savedSaldo = localStorage.getItem('apr_saldo') || "";
+        const savedBunga = localStorage.getItem('apr_bunga') || "";
+        const savedCurrency = localStorage.getItem('apr_currency') || "IDR";
+
+        document.getElementById('saldo').value = savedSaldo;
+        document.getElementById('bunga').value = savedBunga;
+        setCurrency(savedCurrency);
     }
 
     function setCurrency(type) {
         currentCurrency = type;
+        localStorage.setItem('apr_currency', type); // Simpan pilihan mata uang
         document.getElementById('btn-idr').className = type === 'IDR' ? 'active' : '';
         document.getElementById('btn-usd').className = type === 'USD' ? 'active' : '';
         hitung();
@@ -123,15 +133,21 @@
         let sInput = document.getElementById('saldo');
         let bInput = document.getElementById('bunga');
         
+        // Simpan ke localstorage setiap kali ngetik
+        localStorage.setItem('apr_saldo', sInput.value);
+        localStorage.setItem('apr_bunga', bInput.value);
+
         let saldo = parseFloat(sInput.value.replace(/,/g, '')) || 0;
         let bunga = parseFloat(bInput.value.replace(/,/g, '')) || 0;
 
-        if (!sInput.value.includes('.')) sInput.value = formatNumber(saldo, 0);
+        // Visual format ribuan pas ngetik (hanya jika tidak ada titik desimal)
+        if (sInput.value !== "" && !sInput.value.includes('.')) {
+            sInput.value = formatNumber(saldo, 0);
+        }
 
         let thn = saldo * (bunga / 100);
         let p = { tahunan: thn, bulanan: thn / 12, mingguan: thn / 52, harian: thn / 365 };
 
-        // Tampilan bayangan saldo di bawah input
         let konversi = currentCurrency === 'USD' ? saldo * usdToIdr : saldo;
         document.getElementById('cek-saldo').innerText = saldo > 0 ? formatIDR(konversi) : "";
 
@@ -147,8 +163,11 @@
         }
     }
 
-    // Jalankan ambil kurs pas baru buka
-    window.onload = fetchKurs;
+    // Inisialisasi pas pertama buka
+    window.onload = () => {
+        loadSavedData();
+        fetchKurs();
+    };
 </script>
 
 </body>
